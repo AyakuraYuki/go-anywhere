@@ -29,6 +29,15 @@ func main() {
 		os.Exit(0)
 	}
 
+	if cfg.UninstallCA {
+		err := core.UninstallCA()
+		if err != nil {
+			log.Main().Errorf("Uninstall root CA failed: %v", err)
+			os.Exit(1)
+		}
+		os.Exit(0)
+	}
+
 	// --- Resolve ip addresses
 	allIPs, err := core.AllIPAddresses()
 	if err != nil {

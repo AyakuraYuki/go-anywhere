@@ -13,15 +13,16 @@ import (
 )
 
 type Config struct {
-	Host      string // server host ip or hostname
-	Port      int    // server port
-	Dir       string // the root directory for static files
-	Silent    bool   // won't open browser automatically if enabled
-	EnableLog bool   // print access log
-	Fallback  string // enable history fallback
-	Proxy     string // proxy URL
-	Help      bool   // print help information
-	Version   bool   // print version
+	Host        string // server host ip or hostname
+	Port        int    // server port
+	Dir         string // the root directory for static files
+	Silent      bool   // won't open browser automatically if enabled
+	EnableLog   bool   // print access log
+	Fallback    string // enable history fallback
+	Proxy       string // proxy URL
+	Help        bool   // print help information
+	Version     bool   // print version
+	UninstallCA bool   // uninstall root CA certificate
 }
 
 func (cfg *Config) PortTLS() int { return cfg.Port + 1 }
@@ -38,6 +39,7 @@ func Parse() *Config {
 	pflag.StringVar(&cfg.Proxy, "proxy", "", "proxy url (eg: http://localhost:7000/api)")
 	pflag.BoolVar(&cfg.Help, "help", false, "print help information")
 	pflag.BoolVarP(&cfg.Version, "version", "v", false, "print version")
+	pflag.BoolVar(&cfg.UninstallCA, "uninstall-ca", false, "uninstall root CA")
 
 	pflag.Usage = PrintHelp
 
