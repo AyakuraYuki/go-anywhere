@@ -20,16 +20,16 @@ endef
 .PHONY: build build-dev cross-build release test clean
 
 build: clean test
-	@CGO_ENABLED=0 go build -ldflags "-s -w -X main.version=$(VERSION)" -o $(BIN_DIR)/$(NAME)$(EXT)
+	@CGO_ENABLED=0 go build -ldflags "-s -w -X main.version=$(VERSION)" -o $(BIN_DIR)/$(NAME)$(EXT) cmd/anywhere/main.go
 	@echo "binary file: $(BIN_DIR)/$(NAME)$(EXT)"
 
 build-dev: clean test
-	@go build -o $(BIN_DIR)/$(NAME)$(EXT)
+	@go build -o $(BIN_DIR)/$(NAME)$(EXT) cmd/anywhere/main.go
 	@echo "binary file: $(BIN_DIR)/$(NAME)$(EXT)"
 
 cross-build: clean test
 	@$(call check_env)
-	@CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags "-s -w -X main.version=$(VERSION)" -o $(BIN_DIR)/$(NAME)$(EXT)
+	@CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags "-s -w -X main.version=$(VERSION)" -o $(BIN_DIR)/$(NAME)$(EXT) cmd/anywhere/main.go
 	@echo "binary file: $(BIN_DIR)/$(NAME)$(EXT)"
 
 release:
@@ -37,7 +37,7 @@ release:
 	@mkdir -p $(BIN_DIR)
 	@cp LICENSE $(BIN_DIR)/
 	@cp README.md $(BIN_DIR)/
-	@CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags "-s -w -X main.version=$(VERSION)" -o $(BIN_DIR)/$(NAME)$(EXT)
+	@CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags "-s -w -X main.version=$(VERSION)" -o $(BIN_DIR)/$(NAME)$(EXT) cmd/anywhere/main.go
 	@cd $(OUT_DIR) ; $(PACK_CMD)
 
 test:
