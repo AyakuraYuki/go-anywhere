@@ -6,9 +6,11 @@ VERSION?=dev
 
 ifeq ($(GOOS),windows)
   EXT=.exe
+  CHMOD_CMD=
   PACK_CMD=zip -9 -r $(NAME)-$(TARGET)-$(VERSION).zip $(TARGET)
 else
   EXT=
+  CHMOD_CMD=chmod +x $(BIN_DIR)/$(NAME)$(EXT)
   PACK_CMD=tar czpvf $(NAME)-$(TARGET)-$(VERSION).tar.gz $(TARGET)
 endif
 
@@ -38,6 +40,7 @@ release:
 	@cp LICENSE $(BIN_DIR)/
 	@cp README.md $(BIN_DIR)/
 	@CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags "-s -w -X main.version=$(VERSION)" -o $(BIN_DIR)/$(NAME)$(EXT) cmd/anywhere/main.go
+	@$(CHMOD_CMD)
 	@cd $(OUT_DIR) ; $(PACK_CMD)
 
 test:

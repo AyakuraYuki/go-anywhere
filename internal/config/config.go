@@ -3,7 +3,9 @@ package config
 import (
 	"fmt"
 	"os"
+	"os/user"
 	"path/filepath"
+	"strings"
 
 	"github.com/spf13/pflag"
 
@@ -71,16 +73,35 @@ func Parse() *Config {
 // Resolve root directory
 func (cfg *Config) resolveRoot() {
 	if cfg.Dir == "" {
+
 		cwd, err := os.Getwd()
 		if err != nil {
 			log.Scope("config").Errorf("cannot get working directory: %v\n", err)
 			os.Exit(1)
 		}
 		cfg.Dir = cwd
-	}
 
-	if absDir, err := filepath.Abs(cfg.Dir); err == nil {
-		cfg.Dir = absDir
+	} else {
+
+		// expand ${HOME}
+		cfg.Dir = os.ExpandEnv(cfg.Dir)
+
+		// expand tilde
+		usr, err := user.Current()
+		if err != nil {
+			log.Scope("config").Errorf("cannot get current user: %v\n", err)
+			os.Exit(1)
+		}
+		if cfg.Dir == "~" {
+			cfg.Dir = usr.HomeDir
+		} else if strings.HasPrefix(cfg.Dir, "~/") {
+			cfg.Dir = filepath.Join(usr.HomeDir, cfg.Dir[2:])
+		}
+
+		if absDir, err := filepath.Abs(cfg.Dir); err == nil {
+			cfg.Dir = absDir
+		}
+
 	}
 
 	// Verify root directory exists
