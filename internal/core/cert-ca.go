@@ -40,9 +40,10 @@ func loadOrCreateCA() (*x509.Certificate, *ecdsa.PrivateKey, error) {
 		return nil, nil, err
 	}
 
-	if err = installCA(); err != nil {
+	if err = InstallCA(); err != nil {
 		log.Scope("cert-ca").Warnf(`Cannot auto-install CA into trust store: %v
   You can manually trust the CA cert at %s
+  Or run: sudo anywhere --install-ca (required run anywhere at least once)
 `, err, caCertPath())
 	} else {
 		log.Scope("cert-ca").Debugf(`Local CA installed into system trust store.
@@ -148,7 +149,7 @@ func createCA() (*x509.Certificate, *ecdsa.PrivateKey, error) {
 	return caCert, privKey, nil
 }
 
-func installCA() error {
+func InstallCA() error {
 	switch runtime.GOOS {
 	case "darwin":
 		return runCmd("sudo", "security", "add-trusted-cert",

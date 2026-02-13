@@ -22,6 +22,7 @@ type Config struct {
 	Proxy       string // proxy URL
 	Help        bool   // print help information
 	Version     bool   // print version
+	InstallCA   bool   // install root CA certificate
 	UninstallCA bool   // uninstall root CA certificate
 }
 
@@ -39,7 +40,8 @@ func Parse() *Config {
 	pflag.StringVar(&cfg.Proxy, "proxy", "", "proxy url (eg: http://localhost:7000/api)")
 	pflag.BoolVar(&cfg.Help, "help", false, "print help information")
 	pflag.BoolVarP(&cfg.Version, "version", "v", false, "print version")
-	pflag.BoolVar(&cfg.UninstallCA, "uninstall-ca", false, "uninstall root CA")
+	pflag.BoolVar(&cfg.InstallCA, "install-ca", false, "install root CA certificate")
+	pflag.BoolVar(&cfg.UninstallCA, "uninstall-ca", false, "uninstall root CA certificate")
 
 	pflag.Usage = PrintHelp
 
@@ -121,14 +123,17 @@ Usage:
   anywhere [options] [port]
 
 Options:
-  -p, --port <port>       Port number (default: 8000)
   -h, --host <hostname>   Hostname to bind (default: 0.0.0.0)
+  -p, --port <port>       Port number (default: 8000)
   -d, --dir <dir>         Root directory (default: current directory)
   -s, --silent            Silent mode, don't open browser
   -l, --enable-log        Enable access logging
   -f, --fallback <file>   Enable HTML5 history fallback (e.g. -f /index.html)
+  --proxy <url>           Proxy URL (eg: http://localhost:9090/api)
   --help                  Show this help message
   -v, --version           Show version
+  --install-ca            Install root CA certificate (sudo required)
+  --uninstall-ca          Uninstall root CA certificate (sudo required)
 
 Examples:
   anywhere                    # Serve current dir on port 8000
