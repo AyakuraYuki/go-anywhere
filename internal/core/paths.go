@@ -8,7 +8,7 @@ import (
 	"github.com/AyakuraYuki/go-anywhere/internal/log"
 )
 
-func anywhereConfigDir() string {
+func programDataDir() string {
 	usr, err := user.Current()
 	if err == nil {
 		return filepath.Join(usr.HomeDir, ".local", "go-anywhere")
@@ -25,7 +25,7 @@ func anywhereConfigDir() string {
 }
 
 func caDir() string {
-	return filepath.Join(anywhereConfigDir(), "ca")
+	return filepath.Join(programDataDir(), "ca")
 }
 
 func caCertPath() string {

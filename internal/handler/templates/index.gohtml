@@ -19,7 +19,7 @@
       }
 
       .container {
-        max-width: 960px;
+        max-width: 1280px;
         margin: 0 auto;
         padding: 20px;
       }
@@ -82,7 +82,7 @@
         margin-right: 8px;
       }
 
-      .size, .modified {
+      .type, .size, .modified {
         color: #888;
         font-size: 0.9em;
       }
@@ -116,6 +116,7 @@
         <thead>
         <tr>
             <th>Name</th>
+            <th>Type</th>
             <th>Size</th>
             <th class="modified">Modified</th>
         </tr>
@@ -124,6 +125,7 @@
         {{if .HasParent}}
             <tr>
                 <td class="parent-link"><span class="icon">⬆️</span><a href="{{.Parent}}">..</a></td>
+                <td class="type">-</td>
                 <td class="size">-</td>
                 <td class="modified">-</td>
             </tr>
@@ -131,6 +133,7 @@
         {{range .Files}}
             <tr>
                 <td><span class="icon">{{.Icon}}</span><a href="{{.URL}}">{{.Name}}</a></td>
+                <td class="type">{{.Ext}}</td>
                 <td class="size">{{.Size}}</td>
                 <td class="modified">{{.ModTime}}</td>
             </tr>

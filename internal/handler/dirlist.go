@@ -26,6 +26,7 @@ type FileInfo struct {
 	Name    string
 	URL     string
 	Size    string
+	Ext     string
 	ModTime string
 	IsDir   bool
 	Icon    string
@@ -183,6 +184,7 @@ func BuildDirListData(dirPath, urlPath string) (*DirListData, error) {
 			displayName = entry.Name()
 			fileURL     = path.Join(urlPath, url.PathEscape(name))
 			sizeStr     = ""
+			ext         = ""
 		)
 
 		if entry.IsDir() {
@@ -191,12 +193,14 @@ func BuildDirListData(dirPath, urlPath string) (*DirListData, error) {
 			sizeStr = "-"
 		} else {
 			sizeStr = formatSize(info.Size())
+			ext = strings.TrimPrefix(strings.ToLower(filepath.Ext(name)), ".")
 		}
 
 		files = append(files, FileInfo{
 			Name:    displayName,
 			URL:     fileURL,
 			Size:    sizeStr,
+			Ext:     ext,
 			ModTime: info.ModTime().Format(time.DateTime),
 			IsDir:   entry.IsDir(),
 			Icon:    getIcon(name, entry.IsDir()),

@@ -99,10 +99,8 @@ func printStartup(cfg *config.Config, allIPs []string, tlsStarted bool) {
 	t.SetStyle(table.StyleLight)
 	t.SetOutputMirror(os.Stdout)
 
-	t.AppendHeader(table.Row{"anywhere"})
-
 	rows := []table.Row{
-		{fmt.Sprintf("Version: %s", version)},
+		{fmt.Sprintf("anywhere v%s", version)},
 		{""},
 		{fmt.Sprintf("Serving: %-30s", cfg.Dir)},
 		{""},
@@ -111,11 +109,11 @@ func printStartup(cfg *config.Config, allIPs []string, tlsStarted bool) {
 	for _, ip := range allIPs {
 		u := fmt.Sprintf("http://%s%s", ip, portString)
 		rows = append(rows, table.Row{
-			fmt.Sprintf("  -> %-33s", u),
+			fmt.Sprintf("  * %-33s", u),
 		})
 	}
 	rows = append(rows, table.Row{
-		fmt.Sprintf("  -> %-33s", fmt.Sprintf("http://127.0.0.1%s", portString)),
+		fmt.Sprintf("  * %-33s", fmt.Sprintf("http://127.0.0.1%s", portString)),
 	})
 
 	if tlsStarted {
@@ -124,11 +122,11 @@ func printStartup(cfg *config.Config, allIPs []string, tlsStarted bool) {
 		for _, ip := range allIPs {
 			u := fmt.Sprintf("https://%s%s", ip, portStringTLS)
 			rows = append(rows, table.Row{
-				fmt.Sprintf("  -> %-33s", u),
+				fmt.Sprintf("  * %-33s", u),
 			})
 		}
 		rows = append(rows, table.Row{
-			fmt.Sprintf("  -> %-33s", fmt.Sprintf("https://127.0.0.1%s", portStringTLS)),
+			fmt.Sprintf("  * %-33s", fmt.Sprintf("https://127.0.0.1%s", portStringTLS)),
 		})
 	}
 
@@ -142,16 +140,15 @@ func openBrowser(cfg *config.Config, allIPs []string) {
 		return
 	}
 
-	displayHost := cfg.Host
-	if displayHost == "" {
-		if len(allIPs) > 0 {
-			displayHost = allIPs[0]
-		} else {
-			displayHost = "127.0.0.1"
-		}
+	var displayHost string
+
+	if len(allIPs) > 0 {
+		displayHost = allIPs[0]
+	} else {
+		displayHost = "127.0.0.1"
 	}
 
-	openURL := fmt.Sprintf("http://%s:%d/", displayHost, cfg.Port)
+	openURL := fmt.Sprintf("https://%s:%d/", displayHost, cfg.PortTLS())
 	err := core.OpenBrowser(openURL)
 	if err != nil {
 		log.Error().Err(err).Msg("cannot open browser")
