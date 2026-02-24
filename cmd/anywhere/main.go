@@ -100,7 +100,7 @@ func printStartup(cfg *config.Config, allIPs []string, tlsStarted bool) {
 	t.SetOutputMirror(os.Stdout)
 
 	rows := []table.Row{
-		{fmt.Sprintf("anywhere v%s", version)},
+		{fmt.Sprintf("anywhere %s", version)},
 		{""},
 		{fmt.Sprintf("Serving: %-30s", cfg.Dir)},
 		{""},
