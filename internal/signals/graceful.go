@@ -13,7 +13,7 @@ func GraceStop(callback func()) {
 	signal.Notify(ch, syscall.SIGTERM, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGUSR1, syscall.SIGUSR2)
 
 	s := <-ch
-	log.Scope("signals").Infof("server shutdown (%v)", s)
+	log.Info().Any("signal", s).Msg("server shutdown")
 
 	callback()
 	os.Exit(0)

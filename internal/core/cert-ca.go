@@ -12,7 +12,6 @@ import (
 	"math/big"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"runtime"
 	"time"
 
@@ -22,13 +21,6 @@ import (
 const (
 	caName = "go-anywhere Root CA"
 )
-
-func caDir() string {
-	return filepath.Join(AnywhereConfigDir(), "ca")
-}
-
-func caCertPath() string { return filepath.Join(caDir(), "rootCA.pem") }
-func caKeyPath() string  { return filepath.Join(caDir(), "rootCA.key") }
 
 func loadOrCreateCA() (*x509.Certificate, *ecdsa.PrivateKey, error) {
 	if cert, key, err := loadCA(); err == nil {
@@ -41,12 +33,12 @@ func loadOrCreateCA() (*x509.Certificate, *ecdsa.PrivateKey, error) {
 	}
 
 	if err = InstallCA(); err != nil {
-		log.Scope("cert-ca").Warnf(`Cannot auto-install CA into trust store: %v
+		log.Warn().Str("scope", "cert-ca").Msgf(`Cannot auto-install CA into trust store: %v
   You can manually trust the CA cert at %s
   Or run: sudo anywhere --install-ca (required run anywhere at least once)
 `, err, caCertPath())
 	} else {
-		log.Scope("cert-ca").Debugf(`Local CA installed into system trust store.
+		log.Debug().Str("scope", "cert-ca").Msgf(`Local CA installed into system trust store.
   Browsers will trust certificates from this server.
   CA cert location: %s
 `, caCertPath())

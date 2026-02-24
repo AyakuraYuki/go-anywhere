@@ -6,8 +6,9 @@ require (
 	github.com/cloudwego/hertz v0.10.4
 	github.com/hertz-contrib/reverseproxy v1.0.6
 	github.com/jedib0t/go-pretty/v6 v6.7.8
-	github.com/sirupsen/logrus v1.9.4
+	github.com/rs/zerolog v1.34.0
 	github.com/spf13/pflag v1.0.10
+	golang.org/x/net v0.24.0
 	golang.org/x/text v0.34.0
 )
 
@@ -23,16 +24,15 @@ require (
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/hertz-contrib/websocket v0.2.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
+	github.com/mattn/go-colorable v0.1.13 // indirect
+	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/mattn/go-runewidth v0.0.19 // indirect
-	github.com/rivo/uniseg v0.4.7 // indirect
-	github.com/savsgio/gotils v0.0.0-20250924091648-bce9a52d7761 // indirect
 	github.com/stretchr/testify v1.11.1 // indirect
 	github.com/tidwall/gjson v1.18.0 // indirect
 	github.com/tidwall/match v1.2.0 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	golang.org/x/arch v0.24.0 // indirect
-	golang.org/x/net v0.50.0 // indirect
 	golang.org/x/sys v0.41.0 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 )

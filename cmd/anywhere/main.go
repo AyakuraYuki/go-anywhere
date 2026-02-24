@@ -32,7 +32,7 @@ func main() {
 	if cfg.UninstallCA {
 		err := core.UninstallCA()
 		if err != nil {
-			log.Main().Errorf("Uninstall root CA failed: %v", err)
+			log.Error().Err(err).Msg("Uninstall root CA failed")
 			os.Exit(1)
 		}
 		os.Exit(0)
@@ -41,7 +41,7 @@ func main() {
 	// --- Resolve ip addresses
 	allIPs, err := core.AllIPAddresses()
 	if err != nil {
-		log.Main().Errorf("cannot load net interfaces: %v\n", err)
+		log.Error().Err(err).Msg("Cannot load net interfaces")
 		os.Exit(1)
 	}
 
@@ -52,7 +52,7 @@ func main() {
 	h := core.Server(cfg)
 	hs, err := core.ServerTLS(cfg, allIPs)
 	if err != nil {
-		log.Main().Warnf("an issue occurred when preparing tls server, skipped: %v", err)
+		log.Warn().Err(err).Msg("An issue occurred when preparing tls server, skipped")
 	}
 
 	// --- Start Hertz server
@@ -154,6 +154,6 @@ func openBrowser(cfg *config.Config, allIPs []string) {
 	openURL := fmt.Sprintf("http://%s:%d/", displayHost, cfg.Port)
 	err := core.OpenBrowser(openURL)
 	if err != nil {
-		log.Main().Errorf("cannot open browser: %v", err)
+		log.Error().Err(err).Msg("cannot open browser")
 	}
 }

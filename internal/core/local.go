@@ -8,22 +8,30 @@ import (
 	"github.com/AyakuraYuki/go-anywhere/internal/log"
 )
 
-func AnywhereConfigDir() string {
+func anywhereConfigDir() string {
 	usr, err := user.Current()
 	if err == nil {
-		return anywhereConfigDir(usr.HomeDir)
+		return filepath.Join(usr.HomeDir, ".local", "go-anywhere")
 	}
 
 	home, err := os.UserHomeDir()
 	if err == nil {
-		return anywhereConfigDir(home)
+		return filepath.Join(home, ".local", "go-anywhere")
 	}
 
-	log.Scope("core").Errorf("Could not determine home directory")
+	log.Error().Str("scope", "core").Msg("Could not determine home directory")
 	os.Exit(1)
 	return "" // actually cannot reach here
 }
 
-func anywhereConfigDir(prefix string) string {
-	return filepath.Join(prefix, ".local", ".anywhere")
+func caDir() string {
+	return filepath.Join(anywhereConfigDir(), "ca")
+}
+
+func caCertPath() string {
+	return filepath.Join(caDir(), "rootCA.pem")
+}
+
+func caKeyPath() string {
+	return filepath.Join(caDir(), "rootCA.key")
 }

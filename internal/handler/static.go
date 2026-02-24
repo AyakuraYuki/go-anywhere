@@ -5,7 +5,6 @@ import (
 	"embed"
 	"fmt"
 	"html/template"
-	"log"
 	"mime"
 	"net/url"
 	"os"
@@ -18,6 +17,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 
 	"github.com/AyakuraYuki/go-anywhere/internal/config"
+	"github.com/AyakuraYuki/go-anywhere/internal/log"
 )
 
 var (
@@ -89,7 +89,9 @@ func CORS() app.HandlerFunc {
 func LogMiddleware(enabled bool) app.HandlerFunc {
 	return func(c context.Context, ctx *app.RequestContext) {
 		if enabled {
-			log.Printf("[anywhere] %s %s", string(ctx.Method()), string(ctx.Path()))
+			log.Info().Str("scope", "access-log").
+				Str("method", string(ctx.Method())).
+				Str("path", string(ctx.Path()))
 		}
 		ctx.Next(c)
 	}
@@ -133,7 +135,7 @@ func HistoryFallbackMiddleware(dir string, opts FallbackOptions) app.HandlerFunc
 
 	logger := func(format string, args ...any) {
 		if opts.Verbose {
-			log.Printf("[anywhere-fallback] "+format, args...)
+			log.Trace().Str("scope", "history-fallback").Msgf(format, args...)
 		}
 	}
 
@@ -316,7 +318,7 @@ func StaticFileHandler(cfg *config.Config) app.HandlerFunc {
 func RegisterTemplate(h *server.Hertz) {
 	tmpl, err := template.New("hertz-html-engine").ParseFS(templateFS, "templates/*")
 	if err != nil {
-		log.Printf("[anywhere] cannot load html templates: %v\n", err)
+		log.Error().Err(err).Msg("cannot load html templates")
 		os.Exit(1)
 	}
 

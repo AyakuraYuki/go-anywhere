@@ -3,6 +3,7 @@ package core
 import (
 	"context"
 	"crypto/tls"
+	"crypto/x509"
 	"fmt"
 
 	"github.com/cloudwego/hertz/pkg/app"
@@ -24,6 +25,14 @@ func Server(cfg *config.Config) *server.Hertz {
 }
 
 func ServerTLS(cfg *config.Config, ips []string) (*server.Hertz, error) {
+	ca, _, err := loadOrCreateCA()
+	if err != nil {
+		return nil, err
+	}
+
+	caCertPool := x509.NewCertPool()
+	caCertPool.AddCert(ca)
+
 	crt, key, err := GenSelfSignedCert(ips)
 	if err != nil {
 		return nil, err
@@ -35,7 +44,16 @@ func ServerTLS(cfg *config.Config, ips []string) (*server.Hertz, error) {
 	}
 
 	tlsConfig := &tls.Config{
+		// add certificate
 		Certificates: []tls.Certificate{cert},
+		MaxVersion:   tls.VersionTLS13,
+		RootCAs:      caCertPool,
+		// cipher suites supported
+		CipherSuites: []uint16{
+			tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
+			tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+			tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+		},
 	}
 
 	h := server.Default(

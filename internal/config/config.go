@@ -67,7 +67,7 @@ func Parse() *Config {
 
 	// Verify port
 	if cfg.Port < 1 && cfg.Port > 65534 {
-		log.Scope("config").Errorf("invalid port %d (allowed: [1-65534])", cfg.Port)
+		log.Error().Str("scope", "config").Msgf("invalid port %d (allowed: [1-65534])", cfg.Port)
 		os.Exit(1)
 	}
 
@@ -80,7 +80,7 @@ func (cfg *Config) resolveRoot() {
 
 		cwd, err := os.Getwd()
 		if err != nil {
-			log.Scope("config").Errorf("cannot get working directory: %v\n", err)
+			log.Error().Str("scope", "config").Err(err).Msg("cannot get working directory")
 			os.Exit(1)
 		}
 		cfg.Dir = cwd
@@ -93,7 +93,7 @@ func (cfg *Config) resolveRoot() {
 		// expand tilde
 		usr, err := user.Current()
 		if err != nil {
-			log.Scope("config").Errorf("cannot get current user: %v\n", err)
+			log.Error().Str("scope", "config").Err(err).Msg("cannot get current user")
 			os.Exit(1)
 		}
 		if cfg.Dir == "~" {
@@ -111,7 +111,7 @@ func (cfg *Config) resolveRoot() {
 	// Verify root directory exists
 	stat, err := os.Stat(cfg.Dir)
 	if err != nil || !stat.IsDir() {
-		log.Scope("config").Errorf("'%s' is not a valid directory\n", cfg.Dir)
+		log.Error().Str("scope", "config").Msgf("'%s' is not a valid directory", cfg.Dir)
 		os.Exit(1)
 	}
 }

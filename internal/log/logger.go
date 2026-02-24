@@ -1,38 +1,34 @@
 package log
 
 import (
+	"fmt"
+	"os"
+	"strings"
 	"time"
 
-	"github.com/sirupsen/logrus"
+	"github.com/rs/zerolog"
 )
 
-var logger *logrus.Logger
+var logger zerolog.Logger
 
 func init() {
-	logger = logrus.StandardLogger()
-	logger.SetFormatter(&logrus.TextFormatter{
-		ForceColors:               true,
-		DisableQuote:              true,
-		EnvironmentOverrideColors: true,
-		TimestampFormat:           time.DateTime,
-		PadLevelText:              true,
-	})
+	locShanghai, _ := time.LoadLocation("Asia/Shanghai")
+
+	output := zerolog.ConsoleWriter{
+		Out:             os.Stderr,
+		TimeFormat:      time.DateTime,
+		TimeLocation:    locShanghai,
+		FormatLevel:     func(i any) string { return strings.ToUpper(fmt.Sprintf("| %-6s |", i)) },
+		FormatFieldName: func(i any) string { return fmt.Sprintf("%s:", i) },
+	}
+
+	logger = zerolog.New(output).With().Timestamp().Logger()
 }
 
-func Scope(name string) *logrus.Entry { return logger.WithField("scope", name) }
-func Main() *logrus.Entry             { return Scope("anywhere") }
-
-func Info(msg string)                  { logger.Info(msg) }
-func Infof(format string, args ...any) { logger.Infof(format, args...) }
-
-func Warn(msg string)                  { logger.Warn(msg) }
-func Warnf(format string, args ...any) { logger.Warnf(format, args...) }
-
-func Error(msg string)                  { logger.Error(msg) }
-func Errorf(format string, args ...any) { logger.Errorf(format, args...) }
-
-func Debug(msg string)                  { logger.Debug(msg) }
-func Debugf(format string, args ...any) { logger.Debugf(format, args...) }
-
-func Trace(msg string)                  { logger.Trace(msg) }
-func Tracef(format string, args ...any) { logger.Tracef(format, args...) }
+func Debug() *zerolog.Event { return logger.Debug() }
+func Info() *zerolog.Event  { return logger.Info() }
+func Warn() *zerolog.Event  { return logger.Warn() }
+func Error() *zerolog.Event { return logger.Error() }
+func Fatal() *zerolog.Event { return logger.Fatal() }
+func Panic() *zerolog.Event { return logger.Panic() }
+func Trace() *zerolog.Event { return logger.Trace() }
