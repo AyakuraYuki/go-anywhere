@@ -19,16 +19,9 @@ jobs:
 
       - run: make test
 
-      - run: |-
-          RELEASE_VERSION="${GITHUB_REF##*/}"
-          if [[ "${RELEASE_VERSION}" != v* ]]; then RELEASE_VERSION='dev'; fi
-          echo "RELEASE_VERSION=${RELEASE_VERSION}" | tee -a $GITHUB_ENV
-
   build:
     needs: test
-
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         include:
@@ -38,19 +31,15 @@ jobs:
           - { goos: darwin,  goarch: arm64 }
           - { goos: linux,   goarch: amd64 }
           - { goos: linux,   goarch: arm64 }
-
     env:
       GO111MODULE: "on"
       CGO_ENABLED: "0"
-
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
-
-      - run: GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} VERSION=${RELEASE_VERSION} make release
-
+      - run: GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} VERSION=${{ github.ref_name }} make release
       - uses: actions/upload-artifact@v6
         with:
           name: build-${{ matrix.goos }}-${{ matrix.goarch }}
