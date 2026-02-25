@@ -25,16 +25,13 @@ jobs:
           - os: windows-latest
             goos: windows
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.include.os }}
 
     env:
       GO111MODULE: "on"
       CGO_ENABLED: "0"
-      GOOS: ${{ matrix.goos }}
+      GOOS: ${{ matrix.include.goos }}
       GOARCH: ${{ matrix.goarch }}
 
     steps:
-      - run: echo $GO111MODULE
-      - run: echo $CGO_ENABLED
-      - run: echo $GOOS
-      - run: echo $GOARCH
+      - run: echo "Testing matrix on $GOOS_$GOARCH (runs on ${{ matrix.os }})"
