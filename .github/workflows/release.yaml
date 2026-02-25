@@ -47,8 +47,10 @@ jobs:
           - { goos: darwin,  goarch: arm64 }
           - { goos: linux,   goarch: amd64 }
           - { goos: linux,   goarch: arm64 }
+          - { goos: linux,   goarch: "386" }
     env:
       CGO_ENABLED: "0"
+      VERSION: ${{ github.ref_name }}
     steps:
       - uses: actions/checkout@v6
 
@@ -56,15 +58,12 @@ jobs:
         with:
           go-version-file: go.mod
 
-      - run: GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} VERSION=${{ github.ref_name }} make release
+      - run: GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} make release
 
-      - uses: softprops/action-gh-release@v2
+      - uses: actions/upload-artifact@v6
         with:
-          tag_name: ${{ github.ref_name }}
-          name: "Release ${{ github.ref_name }}"
-          draft: false
-          files: build/anywhere-*
-          prerelease: ${{ contains(github.ref_name, '-rc') }}
+          name: build-${{ matrix.goos }}_${{ matrix.goarch }}
+          path: build/anywhere-*
 
   update-tag:
     name: Update Tag
@@ -96,10 +95,20 @@ jobs:
           Created at ${{ env.BUILD_TIME }}.
           EOF
 
+      - uses: actions/download-artifact@v7
+        with:
+          path: build
+          merge-multiple: true
+
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
           name: "Release ${{ github.ref_name }}"
           draft: false
           body_path: release.txt
+          files: build/anywhere-*
           prerelease: ${{ contains(github.ref_name, '-rc') }}
+
+      - uses: geekyeggo/delete-artifact@v5
+        with:
+          name: build-*
