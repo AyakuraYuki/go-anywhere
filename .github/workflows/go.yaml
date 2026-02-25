@@ -59,3 +59,6 @@ jobs:
           name: "Release ${{ github.ref_name }}"
           draft: false
           files: build/anywhere-*
+      - uses: geekyeggo/delete-artifact@v5
+        with:
+          name: build-*
