@@ -66,11 +66,6 @@ jobs:
           files: build/anywhere-*
           prerelease: ${{ contains(github.ref_name, '-rc') }}
 
-      - uses: actions/upload-artifact@v6
-        with:
-          name: build-${{ matrix.goos }}-${{ matrix.goarch }}
-          path: build/anywhere-*
-
   update-tag:
     name: Update Tag
     runs-on: ubuntu-latest
