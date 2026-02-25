@@ -33,4 +33,4 @@ jobs:
       GOARCH: ${{ matrix.goarch }}
 
     steps:
-      - run: echo "Testing matrix on $GOOS_$GOARCH (runs on ${{ matrix.os }})"
+      - run: echo "Testing matrix on ${GOOS}_${GOARCH} (runs on ${{ matrix.os }})"
