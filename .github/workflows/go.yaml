@@ -3,7 +3,7 @@ name: Go
 "on":
   "push":
     "tags":
-      - "v*"
+      - "vv*"  # as disabled
 
 jobs:
   build:
